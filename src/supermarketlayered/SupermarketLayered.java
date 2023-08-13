@@ -4,6 +4,8 @@
  */
 package supermarketlayered;
 
+import supermarketlayered.view.LayoutView;
+
 /**
  *
  * @author Ravidu Ayeshmanth
@@ -14,7 +16,7 @@ public class SupermarketLayered {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        new LayoutView().setVisible(true);
     }
     
 }
