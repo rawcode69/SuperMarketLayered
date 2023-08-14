@@ -4,16 +4,56 @@
  */
 package supermarketlayered.view;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import supermarketlayered.controller.CustomerController;
+import supermarketlayered.dto.CustomerDto;
+
 /**
  *
  * @author Ravidu Ayeshmanth
  */
 public class CustomerPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form CustomerPanel
-     */
+    public CustomerPanel(JButton addButton, JPanel basePanel, JLabel custAddressLabel, JTextField custAddressText, JLabel custCityLabel, JTextField custCityText, JLabel custDobLabel, JTextField custDobText, JLabel custIdLabel, JTextField custIdText, JLabel custNameLabel, JTextField custNameText, JLabel custProvinceLabel, JTextField custProvinceText, JLabel custSalaryLabel, JTextField custSalaryText, JLabel custTitleLabel, JTextField custTitleText, JLabel custZipLabel, JTextField custZipText, JTable customerTable, JButton deleteButton, JPanel fromPanel, JPanel headerPanel, JLabel headerlabel, JScrollPane jScrollPane1, JPanel tablePanel, JButton updateButton) {
+        this.addButton = addButton;
+        this.basePanel = basePanel;
+        this.custAddressLabel = custAddressLabel;
+        this.custAddressText = custAddressText;
+        this.custCityLabel = custCityLabel;
+        this.custCityText = custCityText;
+        this.custDobLabel = custDobLabel;
+        this.custDobText = custDobText;
+        this.custIdLabel = custIdLabel;
+        this.custIdText = custIdText;
+        this.custNameLabel = custNameLabel;
+        this.custNameText = custNameText;
+        this.custProvinceLabel = custProvinceLabel;
+        this.custProvinceText = custProvinceText;
+        this.custSalaryLabel = custSalaryLabel;
+        this.custSalaryText = custSalaryText;
+        this.custTitleLabel = custTitleLabel;
+        this.custTitleText = custTitleText;
+        this.custZipLabel = custZipLabel;
+        this.custZipText = custZipText;
+        this.customerTable = customerTable;
+        this.deleteButton = deleteButton;
+        this.fromPanel = fromPanel;
+        this.headerPanel = headerPanel;
+        this.headerlabel = headerlabel;
+        this.jScrollPane1 = jScrollPane1;
+        this.tablePanel = tablePanel;
+        this.updateButton = updateButton;
+    }
+
+    CustomerController customerController;
+
     public CustomerPanel() {
+        customerController = new CustomerController();
         initComponents();
     }
 
@@ -288,7 +328,7 @@ public class CustomerPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-
+        saveCustomer();
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
@@ -334,4 +374,21 @@ public class CustomerPanel extends javax.swing.JPanel {
     private javax.swing.JPanel tablePanel;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
+
+    private void saveCustomer() {
+
+        CustomerDto customer = new CustomerDto(
+                custIdText.getText(),
+                custTitleText.getText(),
+                custNameText.getText(),
+                custDobText.getText(),
+                Double.valueOf(custSalaryText.getText()),
+                custAddressText.getText(),
+                custCityText.getText(),
+                custProvinceText.getText(),
+                custZipText.getText());
+        
+        String resp = customerController.saveCustomer(customer);
+
+    }
 }
