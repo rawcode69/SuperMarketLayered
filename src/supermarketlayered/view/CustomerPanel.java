@@ -4,12 +4,18 @@
  */
 package supermarketlayered.view;
 
+import java.awt.HeadlessException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import supermarketlayered.controller.CustomerController;
 import supermarketlayered.dto.CustomerDto;
 
@@ -18,7 +24,7 @@ import supermarketlayered.dto.CustomerDto;
  * @author Ravidu Ayeshmanth
  */
 public class CustomerPanel extends javax.swing.JPanel {
-
+    
     public CustomerPanel(JButton addButton, JPanel basePanel, JLabel custAddressLabel, JTextField custAddressText, JLabel custCityLabel, JTextField custCityText, JLabel custDobLabel, JTextField custDobText, JLabel custIdLabel, JTextField custIdText, JLabel custNameLabel, JTextField custNameText, JLabel custProvinceLabel, JTextField custProvinceText, JLabel custSalaryLabel, JTextField custSalaryText, JLabel custTitleLabel, JTextField custTitleText, JLabel custZipLabel, JTextField custZipText, JTable customerTable, JButton deleteButton, JPanel fromPanel, JPanel headerPanel, JLabel headerlabel, JScrollPane jScrollPane1, JPanel tablePanel, JButton updateButton) {
         this.addButton = addButton;
         this.basePanel = basePanel;
@@ -49,12 +55,13 @@ public class CustomerPanel extends javax.swing.JPanel {
         this.tablePanel = tablePanel;
         this.updateButton = updateButton;
     }
-
+    
     CustomerController customerController;
-
+    
     public CustomerPanel() {
         customerController = new CustomerController();
         initComponents();
+        loadAllCustomer();
     }
 
     /**
@@ -286,8 +293,8 @@ public class CustomerPanel extends javax.swing.JPanel {
         tablePanelLayout.setVerticalGroup(
             tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tablePanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout basePanelLayout = new javax.swing.GroupLayout(basePanel);
@@ -323,12 +330,16 @@ public class CustomerPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(basePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        saveCustomer();
+        try {
+            saveCustomer();
+        } catch (Exception ex) {
+            Logger.getLogger(CustomerPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
@@ -375,8 +386,20 @@ public class CustomerPanel extends javax.swing.JPanel {
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 
-    private void saveCustomer() {
-
+    private void clearForm() {
+        custIdText.setText("");
+        custTitleText.setText("");
+        custNameText.setText("");
+        custDobText.setText("");
+        custSalaryText.setText("");
+        custAddressText.setText("");
+        custCityText.setText("");
+        custProvinceText.setText("");
+        custZipText.setText("");
+    }
+    
+    private void saveCustomer() throws Exception {
+        
         CustomerDto customer = new CustomerDto(
                 custIdText.getText(),
                 custTitleText.getText(),
@@ -387,8 +410,39 @@ public class CustomerPanel extends javax.swing.JPanel {
                 custCityText.getText(),
                 custProvinceText.getText(),
                 custZipText.getText());
+        try {
+            String resp = customerController.saveCustomer(customer);
+            JOptionPane.showMessageDialog(this, resp);
+            clearForm();
+        } catch (HeadlessException e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
         
-        String resp = customerController.saveCustomer(customer);
-
+    }
+    
+    private void loadAllCustomer() {
+        
+        try {
+            String ColumnNames[] = {"Customer ID", "Name", "Addres", "City"};
+            DefaultTableModel dtm = new DefaultTableModel(ColumnNames, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+                
+            };
+            
+            customerTable.setModel(dtm);
+            
+            ArrayList<CustomerDto> customers = customerController.getAllCustomer();
+            
+            for (CustomerDto customer : customers) {
+                Object[] rowData = {customer.getCustId(), customer.getCustName(), customer.getCustAddress(), customer.getCity()};
+                dtm.addRow(rowData);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+        
     }
 }

@@ -28,11 +28,11 @@ public class CrudUtil {
         return preparedStatement;
     }
 
-    public boolean executeUpdate(String sql, Object... args) throws SQLException {
+    public static boolean executeUpdate(String sql, Object... args) throws SQLException {
         return getPreparedStatement(sql, args).executeLargeUpdate() > 0;
     }
 
-    public ResultSet executeQuery(String sql, Object... args) throws SQLException {
+    public static ResultSet executeQuery(String sql, Object... args) throws SQLException {
         return getPreparedStatement(sql, args).executeQuery();
     }
 

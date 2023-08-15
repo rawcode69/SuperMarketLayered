@@ -4,6 +4,7 @@
  */
 package supermarketlayered.controller;
 
+import java.util.ArrayList;
 import supermarketlayered.dto.CustomerDto;
 import supermarketlayered.service.custom.CustomerService;
 import supermarketlayered.service.ServiceFactory;
@@ -16,8 +17,12 @@ public class CustomerController {
 
     CustomerService customerService = (CustomerService) ServiceFactory.getInstance().getService(ServiceFactory.ServiceType.CUSTOMER);
 
-    public String saveCustomer(CustomerDto customer) {
+    public String saveCustomer(CustomerDto customer) throws Exception {
         return customerService.saveCustomer(customer);
+    }
+
+    public ArrayList<CustomerDto> getAllCustomer() throws Exception{
+        return customerService.getAllCustomers();
     }
 
 }

@@ -4,32 +4,58 @@
  */
 package supermarketlayered.dao.custom.Impl;
 
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import supermarketlayered.dao.CrudUtil;
 import supermarketlayered.dao.custom.CustomerDao;
+import supermarketlayered.entity.CustomerEntity;
 
 /**
  *
  * @author Ravidu Ayeshmanth
  */
-public class CustomerDaoImpl implements CustomerDao{
+public class CustomerDaoImpl implements CustomerDao {
 
     @Override
-    public boolean add(Object t) {
+    public boolean add(CustomerEntity t) throws Exception {
+        return CrudUtil.executeUpdate("INSERT INTO customer VALUES (?,?,?,?,?,?,?,?,?)", t.getCustId(), t.getCustTitle(), t.getCustName(), t.getDob(), t.getSalary(), t.getCustAddress(), t.getCity(), t.getProvince(), t.getPostalCode());
+    }
+
+    @Override
+    public boolean update(CustomerEntity t) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean delete(String id) throws Exception {
+        return false;
+    }
+
+    @Override
+    public CustomerEntity get(String id) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public boolean update(Object t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public ArrayList<CustomerEntity> getAll() throws Exception {
+        ResultSet rst = CrudUtil.executeQuery("SELECT * FROM customer");
+
+        ArrayList<CustomerEntity> customers = new ArrayList<>();
+
+        while (rst.next()) {
+            CustomerEntity customer = new CustomerEntity(
+                    rst.getString(1),
+                    rst.getString(2),
+                    rst.getString(3),
+                    rst.getString(4),
+                    rst.getDouble(5),
+                    rst.getString(6),
+                    rst.getString(7),
+                    rst.getString(8),
+                    rst.getString(9));
+            customers.add(customer);
+        }
+        return customers;
     }
 
-    @Override
-    public boolean delete(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
- 
-
-
-
-    
 }
