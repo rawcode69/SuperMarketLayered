@@ -25,4 +25,17 @@ public class CustomerController {
         return customerService.getAllCustomers();
     }
 
+    public CustomerDto searchCustomer(String custID) throws Exception{
+        return customerService.searchCustomer(custID);
+    }
+
+    public String updateCustomer(CustomerDto customer) throws Exception {
+        return customerService.updateCustomer(customer);
+    }
+
+    public String deleteCustomer(String custId) throws Exception{
+        return customerService.deleteCustomer(custId)  ;
+    }
+
+   
 }

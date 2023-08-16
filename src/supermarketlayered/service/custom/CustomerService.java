@@ -17,4 +17,10 @@ public interface CustomerService extends SuperService{
     public String saveCustomer(CustomerDto customer) throws Exception;
 
     public ArrayList<CustomerDto> getAllCustomers() throws Exception;
+
+    public CustomerDto searchCustomer(String custID)throws Exception;
+
+    public String updateCustomer(CustomerDto customer) throws Exception;
+
+    public String deleteCustomer(String custId) throws Exception;
 }
