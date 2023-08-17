@@ -4,17 +4,29 @@
  */
 package supermarketlayered.view;
 
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import supermarketlayered.controller.ItemController;
+import supermarketlayered.dto.ItemDto;
+
 /**
  *
  * @author Ravidu Ayeshmanth
  */
 public class ItemPanel extends javax.swing.JPanel {
 
+    ItemController itemController;
+
     /**
      * Creates new form ItemPanel
      */
     public ItemPanel() {
         initComponents();
+        itemController = new ItemController();
+        loadAllItems();
     }
 
     /**
@@ -274,19 +286,106 @@ public class ItemPanel extends javax.swing.JPanel {
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 
+    private void clearForm() {
+        itemCodeText.setText("");
+        itemDescriptionText.setText("");
+        itemPackSizeText.setText("");
+        itemQuantityText.setText("");
+        itemUnitPriceText.setText("");
+    }
+
     private void saveItem() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+        try {
+            ItemDto item = new ItemDto(
+                    itemCodeText.getText(),
+                    itemDescriptionText.getText(),
+                    itemPackSizeText.getText(),
+                    Double.valueOf(itemUnitPriceText.getText()),
+                    Integer.valueOf(itemQuantityText.getText()));
+
+            String resp = itemController.saveItem(item);
+            JOptionPane.showMessageDialog(this, resp);
+            clearForm();
+            loadAllItems();
+        } catch (Exception ex) {
+            Logger.getLogger(ItemPanel.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex);
+        }
+
+    }
+
+    private void loadAllItems() {
+        try {
+            String[] columNames = {"Item Code", "Description", "Pack Size", "Unit Price", "QOH"};
+            DefaultTableModel dtm = new DefaultTableModel(columNames, 0);
+
+            itemTable.setModel(dtm);
+
+            ArrayList<ItemDto> items = itemController.getAllItems();
+
+            for (ItemDto item : items) {
+
+                Object[] rowData = {item.getItemCode(), item.getDescripiton(), item.getPackSize(), item.getUnitPrice(), item.getQoh()};
+
+                dtm.addRow(rowData);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(ItemPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     private void updateItem() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            ItemDto item = new ItemDto(
+                    itemCodeText.getText(),
+                    itemDescriptionText.getText(),
+                    itemPackSizeText.getText(),
+                    Double.valueOf(itemUnitPriceText.getText()),
+                    Integer.valueOf(itemQuantityText.getText()));
+
+            String resp = itemController.updateItem(item);
+            JOptionPane.showMessageDialog(this, resp);
+            clearForm();
+            loadAllItems();
+        } catch (Exception ex) {
+            Logger.getLogger(ItemPanel.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex);
+        }
+
     }
 
     private void deleteItem() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        try {
+            String custId = itemCodeText.getText();
+            
+            String resp = itemController.deleteItem(custId);
+            JOptionPane.showMessageDialog(this, resp);
+            clearForm();
+            loadAllItems();
+        } catch (Exception ex) {
+            Logger.getLogger(ItemPanel.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex);
+        }
+
     }
 
     private void searchItem() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            String custId = itemTable.getValueAt(itemTable.getSelectedRow(), 0).toString();
+
+            ItemDto item = itemController.searchItem(custId);
+
+            itemCodeText.setText(item.getItemCode());
+            itemDescriptionText.setText(item.getDescripiton());
+            itemPackSizeText.setText(item.getPackSize());
+            itemUnitPriceText.setText(String.valueOf(item.getUnitPrice()));
+            itemQuantityText.setText(String.valueOf(item.getQoh()));
+
+        } catch (Exception ex) {
+            Logger.getLogger(ItemPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

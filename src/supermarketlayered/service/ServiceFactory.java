@@ -5,6 +5,8 @@
 package supermarketlayered.service;
 
 import supermarketlayered.service.custom.Impl.CustomerServiceImpl;
+import supermarketlayered.service.custom.Impl.ItermServiceImpl;
+
 /**
  *
  * @author Ravidu Ayeshmanth
@@ -25,17 +27,19 @@ public class ServiceFactory {
         return serviceFactory;
     }
 
-    public SuperService getService(ServiceType type){
+    public SuperService getService(ServiceType type) {
         switch (type) {
             case CUSTOMER:
                 return new CustomerServiceImpl();
-               
+            case ITEM:
+                return new ItermServiceImpl();
+
             default:
                 return null;
         }
     }
-    
+
     public enum ServiceType {
-        CUSTOMER
+        CUSTOMER, ITEM
     }
 }
