@@ -29,12 +29,12 @@ public class ItemController {
         return itemService.searchItem(custId);
     }
 
-    public String updateItem(ItemDto item) throws Exception{
-       return itemService.updateItem(item);
+    public String updateItem(ItemDto item) throws Exception {
+        return itemService.updateItem(item);
     }
 
-    public String deleteItem(String custId) throws Exception{
-      return itemService.deleteItem(custId);
+    public String deleteItem(String custId) throws Exception {
+        return itemService.deleteItem(custId);
     }
 
 }

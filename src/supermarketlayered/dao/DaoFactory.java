@@ -6,6 +6,8 @@ package supermarketlayered.dao;
 
 import supermarketlayered.dao.custom.Impl.CustomerDaoImpl;
 import supermarketlayered.dao.custom.Impl.ItemDaoImpl;
+import supermarketlayered.dao.custom.Impl.OrderDaoImpl;
+import supermarketlayered.dao.custom.Impl.OrderDetailImpl;
 
 /**
  *
@@ -33,6 +35,10 @@ public class DaoFactory {
                 return new CustomerDaoImpl();
             case ITEM:
                 return new ItemDaoImpl();
+            case ORDER:
+                return new OrderDaoImpl();
+            case ORDERDETAIL:
+                return new OrderDetailImpl();
 
             default:
                 return null;
@@ -40,7 +46,7 @@ public class DaoFactory {
     }
 
     public enum DaoTypes {
-        CUSTOMER ,ITEM
+        CUSTOMER, ITEM, ORDER, ORDERDETAIL
     }
 
 }

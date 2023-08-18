@@ -11,19 +11,23 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import supermarketlayered.controller.CustomerController;
 import supermarketlayered.controller.ItemController;
+import supermarketlayered.controller.OrderController;
 import supermarketlayered.dto.CustomerDto;
 import supermarketlayered.dto.ItemDto;
 import supermarketlayered.dto.OrderDetailDto;
+import supermarketlayered.dto.OrderDto;
 
 /**
  *
  * @author Ravidu Ayeshmanth
  */
 public class OrderPanel extends javax.swing.JPanel {
-
+    
     CustomerController customerController;
     ItemController itemController;
+    OrderController orderController;
     ArrayList<OrderDetailDto> orderDetails;
+    Double totalAmount;
 
     /**
      * Creates new form OrderPanel
@@ -31,7 +35,9 @@ public class OrderPanel extends javax.swing.JPanel {
     public OrderPanel() {
         customerController = new CustomerController();
         itemController = new ItemController();
+        orderController = new OrderController();
         orderDetails = new ArrayList<>();
+        totalAmount = 0.0;
         initComponents();
         loadTable();
     }
@@ -45,6 +51,7 @@ public class OrderPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
         basePanel2 = new javax.swing.JPanel();
         headerPanel2 = new javax.swing.JPanel();
         headerlabel2 = new javax.swing.JLabel();
@@ -69,6 +76,10 @@ public class OrderPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         orderTable = new javax.swing.JTable();
         placeOrder = new javax.swing.JButton();
+        totalAmountLabel = new javax.swing.JLabel();
+        totalAmountValue = new javax.swing.JLabel();
+
+        jLabel1.setText("jLabel1");
 
         headerlabel2.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         headerlabel2.setText("Order");
@@ -235,10 +246,20 @@ public class OrderPanel extends javax.swing.JPanel {
         );
         tablePanelLayout.setVerticalGroup(
             tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         placeOrder.setText("Place Order");
+        placeOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                placeOrderActionPerformed(evt);
+            }
+        });
+
+        totalAmountLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        totalAmountLabel.setText("Total Amount : ");
+
+        totalAmountValue.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
 
         javax.swing.GroupLayout basePanel2Layout = new javax.swing.GroupLayout(basePanel2);
         basePanel2.setLayout(basePanel2Layout);
@@ -251,9 +272,14 @@ public class OrderPanel extends javax.swing.JPanel {
                     .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(basePanel2Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addGroup(basePanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(placeOrder)
-                            .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(basePanel2Layout.createSequentialGroup()
+                        .addGap(306, 306, 306)
+                        .addComponent(totalAmountLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(totalAmountValue, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(placeOrder)))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
         basePanel2Layout.setVerticalGroup(
@@ -264,9 +290,12 @@ public class OrderPanel extends javax.swing.JPanel {
                 .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(placeOrder)
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addGroup(basePanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(placeOrder)
+                    .addComponent(totalAmountLabel)
+                    .addComponent(totalAmountValue, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -291,9 +320,13 @@ public class OrderPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void orderIdTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderIdTextActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_orderIdTextActionPerformed
+    private void itemSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSearchButtonActionPerformed
+        searchItem();
+    }//GEN-LAST:event_itemSearchButtonActionPerformed
+
+    private void customerSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerSearchButtonActionPerformed
+        searchCustomer();
+    }//GEN-LAST:event_customerSearchButtonActionPerformed
 
     private void addItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemButtonActionPerformed
         try {
@@ -303,19 +336,21 @@ public class OrderPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_addItemButtonActionPerformed
 
-    private void customerSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerSearchButtonActionPerformed
-        searchCustomer();
-    }//GEN-LAST:event_customerSearchButtonActionPerformed
+    private void orderIdTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderIdTextActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_orderIdTextActionPerformed
 
-    private void itemSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSearchButtonActionPerformed
-        searchItem();
-    }//GEN-LAST:event_itemSearchButtonActionPerformed
+    private void placeOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeOrderActionPerformed
+        try {
+            placeOrder();
+        } catch (Exception ex) {
+            Logger.getLogger(OrderPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_placeOrderActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addItemButton;
-    private javax.swing.JPanel basePanel;
-    private javax.swing.JPanel basePanel1;
     private javax.swing.JPanel basePanel2;
     private javax.swing.JLabel customerLabel;
     private javax.swing.JButton customerSearchButton;
@@ -324,16 +359,13 @@ public class OrderPanel extends javax.swing.JPanel {
     private javax.swing.JLabel discountLabel;
     private javax.swing.JTextField discountText;
     private javax.swing.JPanel formPanel;
-    private javax.swing.JPanel headerPanel;
-    private javax.swing.JPanel headerPanel1;
     private javax.swing.JPanel headerPanel2;
-    private javax.swing.JLabel headerlabel;
-    private javax.swing.JLabel headerlabel1;
     private javax.swing.JLabel headerlabel2;
     private javax.swing.JLabel itemIDLabel;
     private javax.swing.JButton itemSearchButton;
     private javax.swing.JTextField itemText;
     private javax.swing.JLabel itemViewLabel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel orderIDLabel;
@@ -343,21 +375,23 @@ public class OrderPanel extends javax.swing.JPanel {
     private javax.swing.JLabel qtyLabel;
     private javax.swing.JTextField qtyText;
     private javax.swing.JPanel tablePanel;
+    private javax.swing.JLabel totalAmountLabel;
+    private javax.swing.JLabel totalAmountValue;
     // End of variables declaration//GEN-END:variables
 
     private void searchCustomer() {
-
+        
         try {
             String custId = customerText.getText();
             CustomerDto customer = customerController.searchCustomer(custId);
             customerViewLabel.setText(customer.getCustTitle() + " " + customer.getCustName() + ", " + customer.getCity());
-
+            
         } catch (Exception ex) {
             Logger.getLogger(OrderPanel.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, ex);
         }
     }
-
+    
     private void searchItem() {
         try {
             String itemCode = itemText.getText();
@@ -368,7 +402,7 @@ public class OrderPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, ex);
         }
     }
-
+    
     private void loadTable() {
         String columnNames[] = {"Item Code", "Description", "Pack Size", "Unit Price", "Discount", "Quantity", "Total"};
         DefaultTableModel dtm = new DefaultTableModel(columnNames, 0) {
@@ -376,46 +410,64 @@ public class OrderPanel extends javax.swing.JPanel {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
-
+            
         };
-
+        
         orderTable.setModel(dtm);
     }
-
+    
     private void addToTable() throws Exception {
-
+        
         try {
             OrderDetailDto orderDetail = new OrderDetailDto(
                     itemText.getText(),
                     Integer.valueOf(qtyText.getText()),
                     Double.valueOf(discountText.getText()));
-
+            
             ItemDto item = itemController.searchItem(itemText.getText());
-
+            
             DefaultTableModel dtm = (DefaultTableModel) orderTable.getModel();
-
+            
             Double total = (item.getUnitPrice() - orderDetail.getDiscount()) * orderDetail.getOrderQty();
-
+            
             Object rowData[] = {item.getItemCode(), item.getDescripiton(), item.getPackSize(), item.getUnitPrice(), orderDetail.getDiscount(), orderDetail.getOrderQty(), total};
-
+            
+            totalAmount += total;
+            totalAmountValue.setText(String.valueOf(totalAmount));
             dtm.addRow(rowData);
             clear();
             resetItemViewLabel();
-
+            
             orderDetails.add(orderDetail);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e);
         }
-
+        
     }
-
+    
     private void clear() {
         itemText.setText("");
         qtyText.setText("");
         discountText.setText("");
     }
-
+    
     private void resetItemViewLabel() {
         itemViewLabel.setText("");
     }
+    
+    private void placeOrder() throws Exception {
+        
+        OrderDto order = new OrderDto(
+                orderIdText.getText(),
+                customerText.getText(),
+                orderDetails);
+        try {
+            String resp = orderController.placeOrder(order);
+            JOptionPane.showMessageDialog(this, resp);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+        
+    }
+    
 }
