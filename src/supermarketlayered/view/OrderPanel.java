@@ -4,17 +4,36 @@
  */
 package supermarketlayered.view;
 
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import supermarketlayered.controller.CustomerController;
+import supermarketlayered.controller.ItemController;
+import supermarketlayered.dto.CustomerDto;
+import supermarketlayered.dto.ItemDto;
+import supermarketlayered.dto.OrderDetailDto;
+
 /**
  *
  * @author Ravidu Ayeshmanth
  */
 public class OrderPanel extends javax.swing.JPanel {
 
+    CustomerController customerController;
+    ItemController itemController;
+    ArrayList<OrderDetailDto> orderDetails;
+
     /**
      * Creates new form OrderPanel
      */
     public OrderPanel() {
+        customerController = new CustomerController();
+        itemController = new ItemController();
+        orderDetails = new ArrayList<>();
         initComponents();
+        loadTable();
     }
 
     /**
@@ -277,15 +296,19 @@ public class OrderPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_orderIdTextActionPerformed
 
     private void addItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemButtonActionPerformed
-   
+        try {
+            addToTable();
+        } catch (Exception ex) {
+            Logger.getLogger(OrderPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_addItemButtonActionPerformed
 
     private void customerSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerSearchButtonActionPerformed
-        
+        searchCustomer();
     }//GEN-LAST:event_customerSearchButtonActionPerformed
 
     private void itemSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSearchButtonActionPerformed
-       
+        searchItem();
     }//GEN-LAST:event_itemSearchButtonActionPerformed
 
 
@@ -321,4 +344,78 @@ public class OrderPanel extends javax.swing.JPanel {
     private javax.swing.JTextField qtyText;
     private javax.swing.JPanel tablePanel;
     // End of variables declaration//GEN-END:variables
+
+    private void searchCustomer() {
+
+        try {
+            String custId = customerText.getText();
+            CustomerDto customer = customerController.searchCustomer(custId);
+            customerViewLabel.setText(customer.getCustTitle() + " " + customer.getCustName() + ", " + customer.getCity());
+
+        } catch (Exception ex) {
+            Logger.getLogger(OrderPanel.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex);
+        }
+    }
+
+    private void searchItem() {
+        try {
+            String itemCode = itemText.getText();
+            ItemDto item = itemController.searchItem(itemCode);
+            itemViewLabel.setText(item.getDescripiton() + ", Rs." + item.getUnitPrice() + ", " + item.getQoh() + " Items Available");
+        } catch (Exception ex) {
+            Logger.getLogger(OrderPanel.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex);
+        }
+    }
+
+    private void loadTable() {
+        String columnNames[] = {"Item Code", "Description", "Pack Size", "Unit Price", "Discount", "Quantity", "Total"};
+        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+        };
+
+        orderTable.setModel(dtm);
+    }
+
+    private void addToTable() throws Exception {
+
+        try {
+            OrderDetailDto orderDetail = new OrderDetailDto(
+                    itemText.getText(),
+                    Integer.valueOf(qtyText.getText()),
+                    Double.valueOf(discountText.getText()));
+
+            ItemDto item = itemController.searchItem(itemText.getText());
+
+            DefaultTableModel dtm = (DefaultTableModel) orderTable.getModel();
+
+            Double total = (item.getUnitPrice() - orderDetail.getDiscount()) * orderDetail.getOrderQty();
+
+            Object rowData[] = {item.getItemCode(), item.getDescripiton(), item.getPackSize(), item.getUnitPrice(), orderDetail.getDiscount(), orderDetail.getOrderQty(), total};
+
+            dtm.addRow(rowData);
+            clear();
+            resetItemViewLabel();
+
+            orderDetails.add(orderDetail);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+
+    }
+
+    private void clear() {
+        itemText.setText("");
+        qtyText.setText("");
+        discountText.setText("");
+    }
+
+    private void resetItemViewLabel() {
+        itemViewLabel.setText("");
+    }
 }
